@@ -719,6 +719,7 @@ footer {
       <div class="ff">
         <label class="fl">Your Name *</label>
         <input class="fi" id="fName" type="text" placeholder="Full Name" autocomplete="name">
+        <div id="nameError" style="color: #ff4d4d; font-size: 12px; margin-top: 5px; display: none; font-family: var(--fb);">Please enter your name to confirm.</div>
       </div>
       <div class="ff">
         <label class="fl">Number of Members Attending *</label>
@@ -918,10 +919,44 @@ initParticles('c-rsvp',    ['#52B788','#95D5B2','#fff','#B7E4C7'], 50);
 
 /* ══ RSVP ══ */
 function submitRSVP() {
-  const name = document.getElementById('fName').value.trim();
-  if (!name) { alert('Please enter your name'); return; }
+  const nameInput = document.getElementById('fName');
+  const nameError = document.getElementById('nameError');
+  const name = nameInput.value.trim();
+  
+  // Professional Inline Validation
+  if (!name) {
+    nameError.style.display = 'block';
+    nameInput.style.borderColor = '#ff4d4d';
+    nameInput.focus();
+    return;
+  } else {
+    nameError.style.display = 'none';
+    nameInput.style.borderColor = 'rgba(82,183,136,.18)';
+  }
+  
+  // Get selected number of members
+  const membersInput = document.querySelector('input[name="members"]:checked');
+  const members = membersInput ? (membersInput.value === '5' ? '5+' : membersInput.value) : '1';
+  
+  // Construct Professional WhatsApp message
+  const phoneNumber = '919814123405';
+  const message = `✨ *RSVP Confirmation* ✨\n\n` +
+                  `Dear Riddhi & Ankit,\n\n` +
+                  `I am delighted to confirm my presence for your *Mehendi Night*! 🌿\n\n` +
+                  `👤 *Name:* ${name}\n` +
+                  `👥 *Guests:* ${members} Member(s)\n\n` +
+                  `Looking forward to a magical evening of henna, music, and joy! 💚✨`;
+                  
+  const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
+  
+  // Show thank you card with smooth transition
   document.getElementById('rsvpCard').style.display = 'none';
   document.getElementById('tyCard').classList.add('show');
+  
+  // Open WhatsApp after a short delay for better UX
+  setTimeout(() => {
+    window.open(whatsappUrl, '_blank');
+  }, 1200);
 }
 
 /* ══ CAR DIRECTIONS ANIMATION ══ */
